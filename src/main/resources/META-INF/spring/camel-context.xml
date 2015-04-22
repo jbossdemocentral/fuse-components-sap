@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?> <!-- Configures the Camel Context --> <beans xmlns="http://www.springframework.org/schema/beans" 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camel="http://camel.apache.org/schema/spring" 	xsi:schemaLocation="       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd">
+ 	<camel:camelContext xmlns="http://camel.apache.org/schema/spring">
+ 		<camel:route>
+ 			<camel:from uri="timer:runOnce?repeatCount=1" />
+ 			<camel:to uri="sap:destination:NPL:BAPI_FLCUST_GETLIST" />
+ 			<camel:to uri="log:sapintegration?level=INFO" />
+ 			<camel:to uri="file:target?fileName=BAPI_FLCUST_GETLIST.xml" />
+ 		</camel:route>
+ 	</camel:camelContext>
+
+ 	<bean id="sap" class="org.fusesource.camel.component.sap.SAPComponent">
+ 		<property name="destinationDataStore">
+ 			<map>
+ 				<entry key="NPL" value-ref="nplDestinationData" />
+ 			</map>
+ 		</property>
+ 		<property name="serverDataStore">
+ 			<map />
+ 		</property>
+ 		<property name="repositoryDataStore">
+ 			<map />
+ 		</property>
+ 	</bean>
+
+ 	<bean id="nplDestinationData" class="org.fusesource.camel.component.sap.model.rfc.impl.DestinationDataImpl">
+ 		<property name="ashost" value="nplhost" />
+ 		<property name="sysnr" value="00" />
+ 		<property name="client" value="001" />
+ 		<property name="user" value="developer" />
+ 		<property name="passwd" value="password" />
+ 		<property name="lang" value="en" />
+ 	</bean>
+ </beans> 
